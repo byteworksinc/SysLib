@@ -1,1 +1,20 @@
- MACRO&LAB LONG &A,&B LCLB &I LCLB &M&A AMID &A,1,1&M SETB "&A"="M"&I SETB "&A"="I" AIF C:&B=0,.A&B AMID &B,1,1&M SETB ("&B"="M").OR.&M&I SETB ("&B"="I").OR.&I.A&LAB REP #&M*32+&I*16 AIF .NOT.&M,.B LONGA ON.B AIF .NOT.&I,.C LONGI ON.C MEND
+ MACRO
+&LAB LONG &A,&B
+ LCLB &I
+ LCLB &M
+&A AMID &A,1,1
+&M SETB "&A"="M"
+&I SETB "&A"="I"
+ AIF C:&B=0,.A
+&B AMID &B,1,1
+&M SETB ("&B"="M").OR.&M
+&I SETB ("&B"="I").OR.&I
+.A
+&LAB REP #&M*32+&I*16
+ AIF .NOT.&M,.B
+ LONGA ON
+.B
+ AIF .NOT.&I,.C
+ LONGI ON
+.C
+ MEND
