@@ -147,13 +147,15 @@ ptr      equ   4                        pointer to area to dispose of
          tcd
          ldy   ptr                      save pointer in X-Y
          ldx   ptr+2
-         sec                            if no size specified then
+         sec                            get address of size
          tya
          sbc   #2
          sta   ptr
          bcs   lb1
+         txa                            if pointer was 0 or 1 then
+         beq   lb3                        return
          dec   ptr+2
-lb1      lda   [ptr]
+lb1      lda   [ptr]                    if no size specified then
          bne   lb2
          tya                              free a block
          jsl   ~DISPOSE_BLOCK
