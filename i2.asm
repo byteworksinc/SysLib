@@ -149,177 +149,177 @@ SIGN     DS    2
 *  ~MUL2 - Two Byte Signed Integer Multiply
 *
 *  Inputs:
-*	A - multiplicand
-*	X - multipier
+*        A - multiplicand
+*        X - multipier
 *
 *  Outputs:
-*	A - result
-*	V - set if an overflow occurred
+*        A - result
+*        V - set if an overflow occurred
 *
 ****************************************************************
 *
 ~Mul2    start
-num1	equ	1
-num2	equ	5
-sign	equ	7
+num1     equ   1
+num2     equ   5
+sign     equ   7
 ;
 ;  Initialization
 ;
-	tay		save value
-	phd		set up local space
-	tsc
-	sec
-	sbc	#8
-	tcd
-	tcs
-	tya		restore value
-	ldy	#0	make all arguments positive
-	bit	#$8000	  start with A
-	beq	in1
-	eor	#$FFFF
-	inc	A
-	bmi	jen32768	  special case -32768
-	iny
-in1	sta	num1+2
-	txa		  now do X
-	bpl	in2
-	dey
-	eor	#$FFFF
-	inc	A
-	bpl	in2	  special case -32768
-	ldx	num1+2
-jen32768	brl	en32768
-in2	cmp	num1+2	make sure num1+2 is the smaller
-	bge	in3	  operand
-	ldx	num1+2
-	sta	num1+2
-	txa
-in3	sta	num2
-	sty	sign	save sign; non-zero for negative results
+         tay                            save value
+         phd                            set up local space
+         tsc
+         sec
+         sbc   #8
+         tcd
+         tcs
+         tya                            restore value
+         ldy   #0                       make all arguments positive
+         bit   #$8000                     start with A
+         beq   in1
+         eor   #$FFFF
+         inc   A
+         bmi   jen32768                   special case -32768
+         iny
+in1      sta   num1+2
+         txa                              now do X
+         bpl   in2
+         dey
+         eor   #$FFFF
+         inc   A
+         bpl   in2                        special case -32768
+         ldx   num1+2
+jen32768 brl   en32768
+in2      cmp   num1+2                   make sure num1+2 is the smaller
+         bge   in3                        operand
+         ldx   num1+2
+         sta   num1+2
+         txa
+in3      sta   num2
+         sty   sign                     save sign; non-zero for negative results
 ;
 ;  Do the multiply
 ;
-	lda	#0	set up the result
-	stz	num1
+         lda   #0                       set up the result
+         stz   num1
 
-	lsr	num1+2	test the LSB
-	bcc	lb1	br if it is off
-	clc		add in partial product
-	adc	num2
-lb1	ror	A	multiply answer by 2
-	ror	num1
+         lsr   num1+2                   test the LSB
+         bcc   lb1                      br if it is off
+         clc                            add in partial product
+         adc   num2
+lb1      ror   A                        multiply answer by 2
+         ror   num1
 
-	lsr	num1+2	test the LSB
-	bcc	lb2	br if it is off
-	clc		add in partial product
-	adc	num2
-lb2	ror	A	multiply answer by 2
-	ror	num1
+         lsr   num1+2                   test the LSB
+         bcc   lb2                      br if it is off
+         clc                            add in partial product
+         adc   num2
+lb2      ror   A                        multiply answer by 2
+         ror   num1
 
-	lsr	num1+2	test the LSB
-	bcc	lb3	br if it is off
-	clc		add in partial product
-	adc	num2
-lb3	ror	A	multiply answer by 2
-	ror	num1
+         lsr   num1+2                   test the LSB
+         bcc   lb3                      br if it is off
+         clc                            add in partial product
+         adc   num2
+lb3      ror   A                        multiply answer by 2
+         ror   num1
 
-	lsr	num1+2	test the LSB
-	bcc	lb4	br if it is off
-	clc		add in partial product
-	adc	num2
-lb4	ror	A	multiply answer by 2
-	ror	num1
+         lsr   num1+2                   test the LSB
+         bcc   lb4                      br if it is off
+         clc                            add in partial product
+         adc   num2
+lb4      ror   A                        multiply answer by 2
+         ror   num1
 
-	lsr	num1+2	test the LSB
-	beq	abrt4
-	bcc	lb5	br if it is off
-	clc		add in partial product
-	adc	num2
-lb5	ror	A	multiply answer by 2
-	ror	num1
+         lsr   num1+2                   test the LSB
+         beq   abrt4
+         bcc   lb5                      br if it is off
+         clc                            add in partial product
+         adc   num2
+lb5      ror   A                        multiply answer by 2
+         ror   num1
 
-	lsr	num1+2	test the LSB
-	bcc	lb6	br if it is off
-	clc		add in partial product
-	adc	num2
-lb6	ror	A	multiply answer by 2
-	ror	num1
+         lsr   num1+2                   test the LSB
+         bcc   lb6                      br if it is off
+         clc                            add in partial product
+         adc   num2
+lb6      ror   A                        multiply answer by 2
+         ror   num1
 
-	lsr	num1+2	test the LSB
-	bcc	lb7	br if it is off
-	clc		add in partial product
-	adc	num2
-lb7	ror	A	multiply answer by 2
-	ror	num1
+         lsr   num1+2                   test the LSB
+         bcc   lb7                      br if it is off
+         clc                            add in partial product
+         adc   num2
+lb7      ror   A                        multiply answer by 2
+         ror   num1
 
-	lsr	num1+2	test the LSB
-	bcc	lb8	br if it is off
-	clc		add in partial product
-	adc	num2
-lb8	ror	A	multiply answer by 2
-	ror	num1
+         lsr   num1+2                   test the LSB
+         bcc   lb8                      br if it is off
+         clc                            add in partial product
+         adc   num2
+lb8      ror   A                        multiply answer by 2
+         ror   num1
 ;
 ;  Because the operands are sorted, we can stop now
 ;
-	ldy	num1+2	if num1+2 isn't 0 yet, we'll overflow
-	bne	ovfl
-	bit	#$FF80	check for overflow in A
-	bne	ovfl
-	ora	num1	do remaining shifts
-	xba
+         ldy   num1+2                   if num1+2 isn't 0 yet, we'll overflow
+         bne   ovfl
+         bit   #$FF80                   check for overflow in A
+         bne   ovfl
+         ora   num1                     do remaining shifts
+         xba
 ;
 ;  Set sign and exit
 ;
-ss1	ldy	sign	if result is to be neg, reverse sign
-	beq	ss2
-	eor	#$FFFF
-	inc	A
-ss2	tay		restore stack, DP
-	tsc
-	clc
-	adc	#8
-	tcs
-	pld
-	tya
-	clv
-	rtl
+ss1      ldy   sign                     if result is to be neg, reverse sign
+         beq   ss2
+         eor   #$FFFF
+         inc   A
+ss2      tay                            restore stack, DP
+         tsc
+         clc
+         adc   #8
+         tcs
+         pld
+         tya
+         clv
+         rtl
 ;
 ;  Handle an input operand of -32768
 ;
-en32768	txa		-32768 * 0 = 0
-	beq	ss2
+en32768  txa                            -32768 * 0 = 0
+         beq   ss2
 
-	cmp	#1	-32768 * 1 = -32768
-	bne	ovfl	any other result is an overflow
-	lda	#$8000
-	bra	ss2
+         cmp   #1                       -32768 * 1 = -32768
+         bne   ovfl                     any other result is an overflow
+         lda   #$8000
+         bra   ss2
 ;
 ;  Abort with num1+2 = 0 after 4 shifts
 ;
-abrt4	bcc	aa1	add in partial product
-	clc
-	adc	num2
-aa1	bit	#$F800	check for overflow
-	beq	aa2
-	brl	ovfl
-aa2	rol	num1	do remaining shifts
-	ora	num1
-	rol	A
-	rol	A
-	rol	A
-	rol	A
-	bra	ss1
+abrt4    bcc   aa1                      add in partial product
+         clc
+         adc   num2
+aa1      bit   #$F800                   check for overflow
+         beq   aa2
+         brl   ovfl
+aa2      rol   num1                     do remaining shifts
+         ora   num1
+         rol   A
+         rol   A
+         rol   A
+         rol   A
+         bra   ss1
 ;
 ;  Handle an overflow
 ;
-ovfl	tsc		restore stack, DP
-	clc
-	adc	#8
-	tcs
-	pld
-	sep	#%01000000	SEV
-	rtl
-	end
+ovfl     tsc                            restore stack, DP
+         clc
+         adc   #8
+         tcs
+         pld
+         sep   #%01000000               SEV
+         rtl
+         end
 
 ****************************************************************
 *

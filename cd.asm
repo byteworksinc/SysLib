@@ -151,12 +151,12 @@ mouseText dc   i'0'                     mousetext enabled?
 *
 ~CDAShutDown start
 
-	lda	#SysCharErrout+3
-	sta	>SysCharErrout+1
-	lda	#SysCharOut+3
-	sta	>SysCharOut+1
-	lda	#SysLineIn+3
-	sta	>SysLineIn+1
+         lda   #SysCharErrout+3
+         sta   >SysCharErrout+1
+         lda   #SysCharOut+3
+         sta   >SysCharOut+1
+         lda   #SysLineIn+3
+         sta   >SysLineIn+1
          rtl
          end
 
@@ -193,11 +193,11 @@ col80    equ   $C00D                    enable 80 col display
          lda   #1                       cursor is visible
          sta   cursorOn
 
-	lda	#SysCDTextCharOut	use CD I/O
-	sta	SysCharErrout+1
-	sta	SysCharOut+1
-	lda	#SysGraphTextLineIn
-	sta	SysLineIn+1
+         lda   #SysCDTextCharOut        use CD I/O
+         sta   SysCharErrout+1
+         sta   SysCharOut+1
+         lda   #SysGraphTextLineIn
+         sta   SysLineIn+1
 
          plb                            restore caller's data bank
          rtl
@@ -864,13 +864,13 @@ sc3      lda   [lBasl],Y
 *
 SysCDTextCharOut private
 
-	phb		get the character
-	plx
-	ply
-	pla
-	phy
-	phx
-	plb
+         phb                            get the character
+         plx
+         ply
+         pla
+         phy
+         phx
+         plb
          and   #$007F                   convert to standard ASCII
          cmp   #10                      eat line feeds
          beq   wr2

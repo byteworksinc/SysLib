@@ -561,9 +561,9 @@ RETURN   EQU   13
          PHD
          TCD
          JSL   ~SIGN
-	LDA	ANS+2	special case $80000000
-	ORA	NUM2+2
-	JMI	NG1
+         LDA   ANS+2                    special case $80000000
+         ORA   NUM2+2
+         JMI   NG1
          LDA   ANS+2
          BEQ   ML3
 ;
@@ -630,7 +630,7 @@ ML7      LDA   ANS+2                    check for an overflow
          BEQ   ML8
 
          MOVE4 RETURN-1,NUM2            overflow
-ML7A	PLD
+ML7A     PLD
          TSC
          CLC
          ADC   #16
@@ -647,31 +647,31 @@ ML8      LDA   SIGN                     set the sign
          LDA   #0
          SBC   ANS+2
          STA   ANS+2
-ML9      MOVE4 ANS,NUM1	normal return
+ML9      MOVE4 ANS,NUM1                 normal return
          MOVE4 RETURN-1,NUM2
          PLD                            fix stack, DP
          TSC
          CLC
          ADC   #16
          TCS
-	CLV
+         CLV
          RTL
 ;
 ;  Handle the case of either operand starting as $80000000
 ;
-NG1	LDA	NUM2+2	place the other operand in ANS
-	BMI	NG2
-	MOVE4	NUM2,ANS
-NG2	LDA	ANS+2	$80000000 * 0 = 0
-	BNE	ML7A
-	LDA	ANS
-	BEQ	ML9
-	CMP	#1	$80000000 * 1 = $80000000
-	BNE	ML7A	any other result is an overflow
-	STZ	ANS
-	LDA	#$8000
-	STA	ANS+2
-	BRA	ML9
+NG1      LDA   NUM2+2                   place the other operand in ANS
+         BMI   NG2
+         MOVE4 NUM2,ANS
+NG2      LDA   ANS+2                    $80000000 * 0 = 0
+         BNE   ML7A
+         LDA   ANS
+         BEQ   ML9
+         CMP   #1                       $80000000 * 1 = $80000000
+         BNE   ML7A                     any other result is an overflow
+         STZ   ANS
+         LDA   #$8000
+         STA   ANS+2
+         BRA   ML9
          END
 
 ****************************************************************

@@ -107,11 +107,11 @@ lb1      dex
          adc   address
          sta   address
          bra   lb1
-lb2      dec	address	write it to error out
-	ph2	#0
-	ph2	#1
-	ph2	#1
-	jsl	~Puts
+lb2      dec   address                  write it to error out
+         ph2   #0
+         ph2   #1
+         ph2   #1
+         jsl   ~Puts
          pld                            restore DP
          lda   2,s                      fix stack for return
          sta   4,s
@@ -203,7 +203,7 @@ sDevPointer ds 4                        standard output device pointer
 eDevType ds    2                        error output device type
 eDevPointer ds 4                        error output device pointer
 
-~ssRef	ds	4	StartUpTools reference
+~ssRef   ds    4                        StartUpTools reference
          end
 
 ****************************************************************
@@ -270,9 +270,9 @@ eDevPointer ds 4                        error output device pointer
 ;
 ;  Initialize the environment
 ;
-	jsl	SystemSANEInit	Start up SANE
-	jsl	SystemEnvironmentInit	Set up the various environment variables
-	jsl	SysIOStartup	Start the GS/OS text I/O system
+         jsl   SystemSANEInit           Start up SANE
+         jsl   SystemEnvironmentInit    Set up the various environment variables
+         jsl   SysIOStartup             Start the GS/OS text I/O system
          rtl
 ;
 ;  Flag an out of stack memory error
@@ -381,31 +381,31 @@ oom      puts  #'Insufficient bank zero memory',cr=t,errout=t
 *        ~InputChar - set to ' '
 *
 *  Notes:
-*	This subroutine differs from ~_BWStartUp, which it
-*	replaces, in that it uses whatever stack segment the
-*	program launcher allocated.  Compilers allocate stack
-*	frames of a particular size by creating their own stack
-*	segment.
+*        This subroutine differs from ~_BWStartUp, which it
+*        replaces, in that it uses whatever stack segment the
+*        program launcher allocated.  Compilers allocate stack
+*        frames of a particular size by creating their own stack
+*        segment.
 *
 ****************************************************************
 *
 ~_BWStartUp3 start
 
-	pha		save the input values
-	phx
-	phy
-	jsl	SystemUserID
-	jsl	SystemMinStack  	Set ~MinStack to the start of the stack segment
-	jsl	SystemSANEInit	Start up SANE
-	jsl	SystemEnvironmentInit	Set up the various environment variables
-	jsl	SysIOStartup	Start the GS/OS text I/O system
+         pha                            save the input values
+         phx
+         phy
+         jsl   SystemUserID
+         jsl   SystemMinStack           Set ~MinStack to the start of the stack segment
+         jsl   SystemSANEInit           Start up SANE
+         jsl   SystemEnvironmentInit    Set up the various environment variables
+         jsl   SysIOStartup             Start the GS/OS text I/O system
          rtl
          end
 
 ****************************************************************
 *
 *  ~_BWStartUp4 - Compiler initialization for RTL pragma programs
-*	using stack frames
+*        using stack frames
 *
 *  Inputs:
 *        A - user ID
@@ -419,18 +419,18 @@ oom      puts  #'Insufficient bank zero memory',cr=t,errout=t
 *
 ~_BWStartUp4 start
 
-	pha		save the user ID
-	pea	0	no command line
-	pea	0
-	jsl	SystemUserID
-	tsc		save the SP
-	clc
-	adc	#3
+         pha                            save the user ID
+         pea   0                        no command line
+         pea   0
+         jsl   SystemUserID
+         tsc                            save the SP
+         clc
+         adc   #3
          sta   >~callerStack
-	jsl	SystemMinStack  	Set ~MinStack to the start of the stack segment
-	lda	#0	SANE is not started
-	sta	>~SANEStarted
-	jsl	SystemEnvironmentInit	Set up the various environment variables
+         jsl   SystemMinStack           Set ~MinStack to the start of the stack segment
+         lda   #0                       SANE is not started
+         sta   >~SANEStarted
+         jsl   SystemEnvironmentInit    Set up the various environment variables
          rtl
          end
 
@@ -558,13 +558,13 @@ ck1      lda   2,S                      remove input from stack & return
          phk
          plb
 
-	ph2	#0
-	ph4	~ssRef
-	_ShutDownTools
+         ph2   #0
+         ph4   ~ssRef
+         _ShutDownTools
 
-	jsl	SysGraphTextShutdown
+         jsl   SysGraphTextShutdown
 
-	plb
+         plb
          rtl
          end
 
@@ -759,7 +759,7 @@ toolTable dc i'13'
 *
 ~LongMove start
 
-         sub	(4:len,4:source,4:dest),0
+         sub   (4:len,4:source,4:dest),0
 
          ldx   len+2                    move whole banks
          beq   lm2
@@ -845,45 +845,45 @@ lb4      return
 *  extern pascal void __NBACALLBACK (int, HSParamPtr);
 *               
 *  Inputs:
-*	call - call number
-*	HSParamPtr - parameter block
+*        call - call number
+*        HSParamPtr - parameter block
 *
 ****************************************************************
 *
 __NBACallBack start
-	using	~NBACommon
-call	equ	10	callback number
-HSParamPtr equ	6	HyperStudio parameter record
+         using ~NBACommon
+call     equ   10                       callback number
+HSParamPtr equ 6                        HyperStudio parameter record
 
-	phd		set up HyperStudio D reg
-	lda	>~NBA_D
-	tcd
-	lda	HSParamPtr,S	set up the parameter address
-	sta	0
-	lda	HSParamPtr+2,S
-	sta	2
-	ldy	#24	set up the callback number
-	lda	call,S
-	sta	[0],Y
-	ldy	#16	set up the jsl address
-	lda	[0],Y
-	sta	>jsl+1
-	iny
-	lda	[0],Y
-	sta	>jsl+2
-jsl	jsl	jsl
-	pld		return
-	phb
-	plx
-	ply
-	pla
-	pla
-	pla
-	phy
-	phx
-	plb
-	rtl
-	end
+         phd                            set up HyperStudio D reg
+         lda   >~NBA_D
+         tcd
+         lda   HSParamPtr,S             set up the parameter address
+         sta   0
+         lda   HSParamPtr+2,S
+         sta   2
+         ldy   #24                      set up the callback number
+         lda   call,S
+         sta   [0],Y
+         ldy   #16                      set up the jsl address
+         lda   [0],Y
+         sta   >jsl+1
+         iny
+         lda   [0],Y
+         sta   >jsl+2
+jsl      jsl   jsl
+         pld                            return
+         phb
+         plx
+         ply
+         pla
+         pla
+         pla
+         phy
+         phx
+         plb
+         rtl
+         end
 
 ****************************************************************
 *
@@ -893,9 +893,9 @@ jsl	jsl	jsl
 *
 ~NBACommon privdata
 
-~NBA_B	ds	2	caller's B register
-~NBA_D	ds	2	caller's D register
-	end
+~NBA_B   ds    2                        caller's B register
+~NBA_D   ds    2                        caller's D register
+         end
 
 ****************************************************************
 *
@@ -904,16 +904,16 @@ jsl	jsl	jsl
 ****************************************************************
 *
 ~NBAShutdown start
-	using	~NBACommon
+         using ~NBACommon
 
-	jsl	~MM_DisposeAll	shut down the compiler's memory manager
-	jsl	~MM_Init
-	lda	>~NBA_B	restore HyperStudio B
-	pha
-	plb
-	plb
-	rtl
-	end
+         jsl   ~MM_DisposeAll           shut down the compiler's memory manager
+         jsl   ~MM_Init
+         lda   >~NBA_B                  restore HyperStudio B
+         pha
+         plb
+         plb
+         rtl
+         end
 
 ****************************************************************
 *
@@ -922,25 +922,25 @@ jsl	jsl	jsl
 ****************************************************************
 *
 ~NBAStartup start
-	using	~NBACommon
+         using ~NBACommon
 
-	phx		save the parameter address
-	phy
-	phb		save the caller's data bank
-	phb
-	pla
-	sta	>~NBA_B
-	phk		set up our data bank
-	plb
-	ora	#$0100	set up our user ID
-	sta	>~User_ID
-	tdc		save the HyperStudio DP
-	sta	>~NBA_D
-	jsl	SystemEnvironmentInit	Set up the various environment variables
-	ply
-	plx
-	rtl
-	end
+         phx                            save the parameter address
+         phy
+         phb                            save the caller's data bank
+         phb
+         pla
+         sta   >~NBA_B
+         phk                            set up our data bank
+         plb
+         ora   #$0100                   set up our user ID
+         sta   >~User_ID
+         tdc                            save the HyperStudio DP
+         sta   >~NBA_D
+         jsl   SystemEnvironmentInit    Set up the various environment variables
+         ply
+         plx
+         rtl
+         end
 
 ****************************************************************
 *
@@ -1061,21 +1061,21 @@ dv10     lda   ans                      move answer, remainder to stack
 *
 ****************************************************************
 *
-~Quit	start
+~Quit    start
 
-	pha		save the return code
-	jsl	SysIOShutdown	Shut down the GS/OS text I/O system
-	jsl	SystemSANEShutDown	shut down SANE
-	jsl	SystemMMShutDown	shut down the compiler's memory manager
-	pla		restore the return code
-	QuitGS qt_dcb	return to the calling shell
+         pha                            save the return code
+         jsl   SysIOShutdown            Shut down the GS/OS text I/O system
+         jsl   SystemSANEShutDown       shut down SANE
+         jsl   SystemMMShutDown         shut down the compiler's memory manager
+         pla                            restore the return code
+         QuitGS qt_dcb                  return to the calling shell
 
-qt_dcb   dc	i'2'
+qt_dcb   dc    i'2'
 ~QuitPath entry
-	dc	a4'0'
+         dc    a4'0'
 ~QuitFlags entry
-	dc	i'0'
-	end
+         dc    i'0'
+         end
 
 ****************************************************************
 *
@@ -1124,15 +1124,15 @@ lb1      lda   [ptr],Y
 *
 ****************************************************************
 *
-~RTL	start
+~RTL     start
 
-	jsl	SystemMMShutDown	shut down the compiler's memory manager
+         jsl   SystemMMShutDown         shut down the compiler's memory manager
          tax                            save return code
          lda   >~callerStack            restore original stack
          tcs
          txa                            reset return code
          rtl                            return to caller
-	end
+         end
 
 ****************************************************************
 *
@@ -1342,17 +1342,17 @@ lb1      asl   A                          shift left
          inx
          bne   lb1
          bra   rtl                      else
-lb2      bit	#$8000	  if value >= 0 then
-	bne	lb4
+lb2      bit   #$8000                     if value >= 0 then
+         bne   lb4
 lb3      lsr   A                            unsigned shift right
          dex
          bne   lb3
-	rtl		  else
+         rtl                              else
 
-lb4	sec		    signed shift right
-	ror	A
-	dex
-	bne	lb4
+lb4      sec                                signed shift right
+         ror   A
+         dex
+         bne   lb4
 rtl      rtl
          end
 
@@ -1373,26 +1373,26 @@ qSize    equ   20                       event manager queue size
 maxY     equ   200                      max y coordinate
 
          sub   (2:size),0
-	phb
-	phk
-	plb
+         phb
+         phk
+         plb
 
-         lda   size	set the video mode
+         lda   size                     set the video mode
          lsr   A
          lsr   A
          and   #$80
-	sta	ssVideoMode
-	pha		start the tools
-	pha
+         sta   ssVideoMode
+         pha                            start the tools
+         pha
          ph2   >~User_ID
-         ph2	#0
-	ph4	#ssRec
-	_StartUpTools
-	bcs	toolError
-	pl4	~ssRef
-	_InitCursor
+         ph2   #0
+         ph4   #ssRec
+         _StartUpTools
+         bcs   toolError
+         pl4   ~ssRef
+         _InitCursor
 
-	jsl	SysGraphTextStartup
+         jsl   SysGraphTextStartup
 
 rts      plb
          return
@@ -1409,29 +1409,29 @@ msg      dw    'Could not start tools: '
 
          dc    r'~EndDesk'              make sure EndDesk gets linked
 
-ssRec	dc	i'0'	flags
-ssVideoMode ds	2	video mode
-	dc	i'0'
-	dc	i4'0'
-	dc	i'(ssEnd-ssStart)/4'
-ssStart	anop
-	dc	i'3,$0302'	Miscellaneos Tool Set
-	dc	i'4,$0307'	QuickDraw II
-	dc	i'5,$0304'	Desk Manager
-	dc	i'6,$0301'	Event Manager
-	dc	i'11,$0300'	Integer Math Tool Set
-	dc	i'14,$0303'	Window Manager
-	dc	i'15,$0303'	Menu Manager
-	dc	i'16,$0303'	Control Manager
-	dc	i'18,$0304'	QuickDraw II Auxiliary
-	dc	i'20,$0303'	Line Edit Tool Set
-	dc	i'21,$0304'	Dialog Manager
-	dc	i'22,$0301'	Scrap Manager
-	dc	i'23,$0303'	Standard File Operations
-	dc	i'27,$0303'	Font Manager
-	dc	i'28,$0303'	List Manager
-	dc	i'30,$0102'	Resource Manager
-ssEnd	anop
+ssRec    dc    i'0'                     flags
+ssVideoMode ds 2                        video mode
+         dc    i'0'
+         dc    i4'0'
+         dc    i'(ssEnd-ssStart)/4'
+ssStart  anop
+         dc    i'3,$0302'               Miscellaneos Tool Set
+         dc    i'4,$0307'               QuickDraw II
+         dc    i'5,$0304'               Desk Manager
+         dc    i'6,$0301'               Event Manager
+         dc    i'11,$0300'              Integer Math Tool Set
+         dc    i'14,$0303'              Window Manager
+         dc    i'15,$0303'              Menu Manager
+         dc    i'16,$0303'              Control Manager
+         dc    i'18,$0304'              QuickDraw II Auxiliary
+         dc    i'20,$0303'              Line Edit Tool Set
+         dc    i'21,$0304'              Dialog Manager
+         dc    i'22,$0301'              Scrap Manager
+         dc    i'23,$0303'              Standard File Operations
+         dc    i'27,$0303'              Font Manager
+         dc    i'28,$0303'              List Manager
+         dc    i'30,$0102'              Resource Manager
+ssEnd    anop
          end
 
 ****************************************************************
@@ -1454,21 +1454,21 @@ formFeed equ   $0C
          phk
          plb
 
-         lda   size	set the video mode
+         lda   size                     set the video mode
          lsr   A
          lsr   A
          and   #$80
-	sta	ssVideoMode
-	pha		start the tools
-	pha
+         sta   ssVideoMode
+         pha                            start the tools
+         pha
          ph2   >~User_ID
-         ph2	#0
-	ph4	#ssRec
-	_StartUpTools
-	jcs	toolError
-	pl4	~ssRef
+         ph2   #0
+         ph4   #ssRec
+         _StartUpTools
+         jcs   toolError
+         pl4   ~ssRef
 
-         _HideCursor	hide the cursor
+         _HideCursor                    hide the cursor
          ph2   #0                       clear the screen
          _ClearScreen
          jcs   toolError
@@ -1491,7 +1491,7 @@ formFeed equ   $0C
          _SetBackColor
          bcs   toolError
 
-	jsl	SysGraphTextStartup
+         jsl   SysGraphTextStartup
 
 rts      plb
          return
@@ -1508,15 +1508,15 @@ msg      dw    'Could not start tools: '
 
          dc    r'~EndGraph'             make sure EndGraph gets linked
 
-ssRec	dc	i'0'	flags
-ssVideoMode ds	2	video mode
-	dc	i'0'
-	dc	i4'0'
-	dc	i'(ssEnd-ssStart)/4'
-ssStart	anop
-	dc	i'3,$0302'	Miscellaneos Tool Set
-	dc	i'4,$0307'	QuickDraw II
-ssEnd	anop
+ssRec    dc    i'0'                     flags
+ssVideoMode ds 2                        video mode
+         dc    i'0'
+         dc    i4'0'
+         dc    i'(ssEnd-ssStart)/4'
+ssStart  anop
+         dc    i'3,$0302'               Miscellaneos Tool Set
+         dc    i'4,$0307'               QuickDraw II
+ssEnd    anop
          end
 
 ****************************************************************
@@ -1556,11 +1556,11 @@ S        ds    2
 *
 SystemEnvironmentInit start
 
-	phb
-	phk
-	plb
+         phb
+         phk
+         plb
 
-	lda   #' '                     reset(input)
+         lda   #' '                     reset(input)
          sta   ~InputChar
          stz   ~EOLNInput
          stz   ~EOFInput
@@ -1573,9 +1573,9 @@ SystemEnvironmentInit start
          stz   ~thisFile                initialize file lists
          stz   ~thisFile+2
 
-	plb
-	rtl
-	end
+         plb
+         rtl
+         end
 
 ****************************************************************
 *
@@ -1590,22 +1590,22 @@ SystemEnvironmentInit start
 *
 SystemMinStack start
 
-	pha		find the stack segment handle
-	pha
-	pea	0
-	tsc
-	pha
-	_FindHandle
-	phd		set up a direct page
-	tsc
-	tcd
-	lda	[3]	dereference the handle
-	pld		restore caller's DP
-	sta	>~MinStack	set ~MinStack
-	pla
-	pla
-	rtl
-	end
+         pha                            find the stack segment handle
+         pha
+         pea   0
+         tsc
+         pha
+         _FindHandle
+         phd                            set up a direct page
+         tsc
+         tcd
+         lda   [3]                      dereference the handle
+         pld                            restore caller's DP
+         sta   >~MinStack               set ~MinStack
+         pla
+         pla
+         rtl
+         end
 
 ****************************************************************
 *
@@ -1615,57 +1615,57 @@ SystemMinStack start
 *
 SystemMMShutDown start
 
-	jsl   ~MM_Init                 zero the memory manager
+         jsl   ~MM_Init                 zero the memory manager
          ph2   >~User_ID                dispose of any remaining memory
          _DisposeAll                     allocated by the memory manager
-	rtl
-	end
+         rtl
+         end
 
 ****************************************************************
 *
 *  SystemQuitFlags - set the Quit flags
 *
 *  Inputs:
-*	path - GS/OS input path to quit to
+*        path - GS/OS input path to quit to
 *
 ****************************************************************
 *
 SystemQuitFlags start
 
-	phb
-	plx
-	ply
-	pla
-	sta	>~QuitFlags
-	phy
-	phx
-	plb
-	rtl
-	end
+         phb
+         plx
+         ply
+         pla
+         sta   >~QuitFlags
+         phy
+         phx
+         plb
+         rtl
+         end
 
 ****************************************************************
 *
 *  SystemQuitPath - set the Quit pathname
 *
 *  Inputs:
-*	path - GS/OS input path to quit to
+*        path - GS/OS input path to quit to
 *
 ****************************************************************
 *
 SystemQuitPath start
 
-	phb
-	plx
-	ply
-	pla
-	sta	>~QuitPath
-	pla
-	sta	>~QuitPath+2
-	phy
-	phx
-	plb
-	rtl
-	end
+         phb
+         plx
+         ply
+         pla
+         sta   >~QuitPath
+         pla
+         sta   >~QuitPath+2
+         phy
+         phx
+         plb
+         rtl
+         end
 
 ****************************************************************
 *
@@ -1675,8 +1675,8 @@ SystemQuitPath start
 *
 SystemSANEInit start
 
-	lda	#0	SANE has not been started by us (yet)
-	sta	>~SANEStarted
+         lda   #0                       SANE has not been started by us (yet)
+         sta   >~SANEStarted
          pha                            if SANE has not been started then
          _SANEStatus
          pla
@@ -1689,8 +1689,8 @@ SystemSANEInit start
          _SANEStartUp                     initialize SANE
          lda   #1                         set the SANE startup flag
          sta   >~SANEStarted
-sn1	rtl
-	end
+sn1      rtl
+         end
 
 ****************************************************************
 *
@@ -1705,36 +1705,36 @@ SystemSANEShutDown start
          _SANEShutDown                    shut it down
          lda   #0                         clear the flag (for restarts)
          sta   >~SANEStarted
-qt1	rtl
-	end
+qt1      rtl
+         end
 
 ****************************************************************
 *
 *  SystemUserID - set up the user ID and command line
 *
 *  Inputs:
-*	8,S - user ID
-*	4,S - command line address
+*        8,S - user ID
+*        4,S - command line address
 *
 ****************************************************************
 *
 SystemUserID start
 
          phk                            remove the return address
-	plx
-	ply
-	pla		save the command line address
-	sta	>~CommandLine
-	pla
-	sta	>~CommandLine+2
-	pla		set up our user ID
-	ora	#$0100
-	sta	>~User_ID
-	phy		return to the caller
-	phx
-	plb		(set up B, too)
-	rtl
-	end
+         plx
+         ply
+         pla                            save the command line address
+         sta   >~CommandLine
+         pla
+         sta   >~CommandLine+2
+         pla                            set up our user ID
+         ora   #$0100
+         sta   >~User_ID
+         phy                            return to the caller
+         phx
+         plb                            (set up B, too)
+         rtl
+         end
 
 ****************************************************************
 *
@@ -1799,88 +1799,88 @@ err      pla
 *  ~UMul2 - unsigned multiply
 *
 *  Inputs:
-*	X,A - operands
+*        X,A - operands
 *
 *  Outputs:
-*	A - result
+*        A - result
 *
 *  Notes:
-*	This routine is used for array index calculations and
-*	fur unsigned multiplies in C.  It does not check for
-*	overflows.
+*        This routine is used for array index calculations and
+*        fur unsigned multiplies in C.  It does not check for
+*        overflows.
 *
 ****************************************************************
 *
-~UMul2	start
-n1	equ	3
-n2	equ	5
+~UMul2   start
+n1       equ   3
+n2       equ   5
 ;
 ;  Initialization
 ;
-	phx		save the operands
-	pha
-	phd		set up our DP
-	tsc
-	tcd
-	cpx	n1	make sure n1 is the smaller argument
-	bge	in1
-	lda	n1
-	stx	n1
-	sta	n2
-in1	anop
+         phx                            save the operands
+         pha
+         phd                            set up our DP
+         tsc
+         tcd
+         cpx   n1                       make sure n1 is the smaller argument
+         bge   in1
+         lda   n1
+         stx   n1
+         sta   n2
+in1      anop
 ;
 ;  Do the multiply
 ;
-	lda	#0
+         lda   #0
 
-	lsr	n1
-	bcc	lb1
-	clc
-	adc	n2
-lb1	asl	n2
+         lsr   n1
+         bcc   lb1
+         clc
+         adc   n2
+lb1      asl   n2
 
-	lsr	n1
-	bcc	lb2
-	clc
-	adc	n2
-lb2	asl	n2
+         lsr   n1
+         bcc   lb2
+         clc
+         adc   n2
+lb2      asl   n2
 
-	lsr	n1
-	bcc	lb3
-	clc
-	adc	n2
-lb3	asl	n2
+         lsr   n1
+         bcc   lb3
+         clc
+         adc   n2
+lb3      asl   n2
 
-	lsr	n1
-	beq	abrt4
-	bcc	lb4
-	clc
-	adc	n2
-lb4	asl	n2
+         lsr   n1
+         beq   abrt4
+         bcc   lb4
+         clc
+         adc   n2
+lb4      asl   n2
 
-	lsr	n1
-	bcc	lb5
-	clc
-	adc	n2
-lb5	asl	n2
+         lsr   n1
+         bcc   lb5
+         clc
+         adc   n2
+lb5      asl   n2
 
-	lsr	n1
-	bcc	lb6
-	clc
-	adc	n2
-lb6	asl	n2
+         lsr   n1
+         bcc   lb6
+         clc
+         adc   n2
+lb6      asl   n2
 
-	lsr	n1
-	bcc	lb7
-	clc
-	adc	n2
-lb7	asl	n2
+         lsr   n1
+         bcc   lb7
+         clc
+         adc   n2
+lb7      asl   n2
 
-	lsr	n1
-	bcc	lb8
-	clc
-	adc	n2
-lb8	asl	n2
+         lsr   n1
+         bcc   lb8
+         clc
+         adc   n2
+lb8      asl   n2
 
 ! Note: We're done: since n1 < n2, we either overflow or the remaining bits are
 ! zero.
@@ -1888,22 +1888,22 @@ lb8	asl	n2
 ;
 ;  Return the result
 ;
-	pld
-	plx
-	plx
-	rtl
+         pld
+         plx
+         plx
+         rtl
 ;
 ;  Abort with n1 = 0 after 4 shifts
 ;
-abrt4	bcc	aa1
-	clc
-	adc	n2
+abrt4    bcc   aa1
+         clc
+         adc   n2
 
-aa1	pld		return the result
-	plx
-	plx
-	rtl
-	end
+aa1      pld                            return the result
+         plx
+         plx
+         rtl
+         end
 
 ****************************************************************
 *
@@ -2030,8 +2030,8 @@ rtl      rtl
 *
 ~XCMDCommon privdata
 
-~XCMD_B	ds	2	caller's B register
-	end
+~XCMD_B  ds    2                        caller's B register
+         end
 
 ****************************************************************
 *
@@ -2040,16 +2040,16 @@ rtl      rtl
 ****************************************************************
 *
 ~XCMDShutdown start
-	using	~XCMDCommon
+         using ~XCMDCommon
 
-	jsl	~MM_DisposeAll	shut down the compiler's memory manager
-	jsl	~MM_Init
-	lda	>~XCMD_B	restore HyperCard B
-	pha
-	plb
-	plb
-	rtl
-	end
+         jsl   ~MM_DisposeAll           shut down the compiler's memory manager
+         jsl   ~MM_Init
+         lda   >~XCMD_B                 restore HyperCard B
+         pha
+         plb
+         plb
+         rtl
+         end
 
 ****************************************************************
 *
@@ -2058,31 +2058,31 @@ rtl      rtl
 ****************************************************************
 *
 ~XCMDStartup start
-	using	~XCMDCommon
+         using ~XCMDCommon
 
-	lda	9,S	set up the parameter for main()
-	tax
-	lda	7,S
-	tay
-	lda	5,S
-	sta	9,S
-	lda	4,S
-	sta	8,S
-	tya
-	sta	4,S
-	txa
-	sta	6,S
-	phb		save the caller's data bank
-	phb
-	pla
-	sta	>~XCMD_B
-	phk		set up our data bank
-	plb
-	ora	#$0100	set up our user ID
-	sta	>~User_ID
-	jsl	SystemEnvironmentInit	Set up the various environment variables
-	rtl
-	end
+         lda   9,S                      set up the parameter for main()
+         tax
+         lda   7,S
+         tay
+         lda   5,S
+         sta   9,S
+         lda   4,S
+         sta   8,S
+         tya
+         sta   4,S
+         txa
+         sta   6,S
+         phb                            save the caller's data bank
+         phb
+         pla
+         sta   >~XCMD_B
+         phk                            set up our data bank
+         plb
+         ora   #$0100                   set up our user ID
+         sta   >~User_ID
+         jsl   SystemEnvironmentInit    Set up the various environment variables
+         rtl
+         end
 
 ****************************************************************
 *

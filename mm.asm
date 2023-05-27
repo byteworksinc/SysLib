@@ -465,19 +465,19 @@ ptr      equ   1                        pointer to area
 ~MM_DISPOSEALL start
          using ~common
 
-lb1	lda	~blocks	while ~blocks <> nil do begin
-	ora	~blocks+2
-	beq	lb3
-	lda	~blocks	  ~DISPOSE_BLOCK(~blocks+~blockheader)
-	ldx	~blocks+2
-	clc
-	adc	#~blockheader
-	bcc	lb2
-	inx
-lb2	jsl	~DISPOSE_BLOCK
-	bra	lb1
-lb3	rtl
-	end
+lb1      lda   ~blocks                  while ~blocks <> nil do begin
+         ora   ~blocks+2
+         beq   lb3
+         lda   ~blocks                    ~DISPOSE_BLOCK(~blocks+~blockheader)
+         ldx   ~blocks+2
+         clc
+         adc   #~blockheader
+         bcc   lb2
+         inx
+lb2      jsl   ~DISPOSE_BLOCK
+         bra   lb1
+lb3      rtl
+         end
 
 ****************************************************************
 *
