@@ -67,7 +67,11 @@ p        equ   8                        pointer to area
          tsc                            set up DP
          phd
          tcd
+         lda   elt_count+2              if elt count or size is > $7fffffff then
+         ora   elt_size+2
+         bmi   lb0                        return 0
          mul4  elt_count,elt_size,size  compute size of area
+         bvs   lb0                      if overflow occurred then return 0
          lda   size                     if < ~BLOCKSIZE-~HEADERSIZE then
          ldx   size+2
          bne   lb2
@@ -75,7 +79,7 @@ p        equ   8                        pointer to area
          bge   lb2
          tay                              if 0 then return NULL
          bne   lb1
-         lda   #0
+lb0      lda   #0
          tax
          bra   lb8
 lb1      jsl   ~NEW_AREA                  allocate area
