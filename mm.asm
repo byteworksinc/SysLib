@@ -730,6 +730,7 @@ handle   equ   5                        handle of block
          adc   #~blockheader
          bcc   lb1
          inx
+         beq   lb1c                     if addition overflowed then return NIL
 lb1      sta   >memSize                 save memory size
          txa
          sta   >memSize+2
