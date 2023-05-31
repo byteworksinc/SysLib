@@ -869,11 +869,11 @@ size     equ   12                       size of new area
          lda   size                     if size is 0 then
          ora   size+2
          bne   zr1
-         ph4   ptr                        deaalocate the old area
+         ph4   <ptr                       deaalocate the old area
          jsl   free
          bra   lb5                        quit
 
-zr1      ph4   size                     reserve the new area
+zr1      ph4   <size                    reserve the new area
          jsl   malloc
          sta   p
          stx   p+2

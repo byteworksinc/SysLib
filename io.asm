@@ -403,7 +403,7 @@ lb5      lda   neg                      if neg then
          sta   >~ASCII,X
          long  M
 lb6      anop                           endif
-lb7      ph4   adr                      move the characters to the string buffer
+lb7      ph4   <adr                     move the characters to the string buffer
          jsl   ~MovStr
          move4 4,num1+4                 fix return addr
          pld                            fix DP
@@ -940,7 +940,7 @@ lb2      OpenGS opRec                   if the file can be opened then
          lda   opRefnum                   return the reference number
          sta   refNum
 
-lb3      ph4   handle                   dispose of the file name buffer
+lb3      ph4   <handle                  dispose of the file name buffer
          _DisposeHandle
 
 lb4      lret  2:refnum
@@ -1142,9 +1142,9 @@ err      equ   4                        error output flag
          lda   N
          jsl   ~CV2S
          ph4   #~string                 write the string
-         ph2   F1
-         ph2   CR
-         ph2   err
+         ph2   <F1
+         ph2   <CR
+         ph2   <err
          jsl   ~PUTS
          move4 0,F1                     patch return addr
          pld                            fix DP
@@ -1213,9 +1213,9 @@ err      equ   4                        error output flag
          ph4   #~string
          jsl   ~CV8S
          ph4   #~string                 write the string
-         ph2   F1
-         ph2   CR
-         ph2   err
+         ph2   <F1
+         ph2   <CR
+         ph2   <err
          jsl   ~PUTS
          move4 0,N+4                    patch return addr
          pld                            fix DP
@@ -1253,9 +1253,9 @@ err      equ   4                        error output flag
          ph4   #true
          bra   lb2
 lb1      ph4   #false
-lb2      ph2   F1                       write the string
-         ph2   CR
-         ph2   err
+lb2      ph2   <F1                      write the string
+         ph2   <CR
+         ph2   <err
          jsl   ~PUTS
          move4 0,F1                     patch return addr
          pld                            fix DP
@@ -1296,9 +1296,9 @@ err      equ   4                        error output flag
          lda   N
          sta   ~string+2
          ph4   #~string                 write the string
-         ph2   F1
-         ph2   CR
-         ph2   err
+         ph2   <F1
+         ph2   <CR
+         ph2   <err
          jsl   ~PUTS
          move4 0,F1                     patch return addr
          pld                            fix DP
