@@ -1126,8 +1126,9 @@ lb1      lda   [ptr],Y
 *
 ~RTL     start
 
+         pha                            save return code
          jsl   SystemMMShutDown         shut down the compiler's memory manager
-         tax                            save return code
+         plx
          lda   >~callerStack            restore original stack
          tcs
          txa                            reset return code
