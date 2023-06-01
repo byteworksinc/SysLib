@@ -869,9 +869,9 @@ size     equ   12                       size of new area
          lda   size                     if size is 0 then
          ora   size+2
          bne   zr1
-         ph4   <ptr                       deaalocate the old area
+         ph4   <ptr                       deallocate the old area
          jsl   free
-         bra   lb5                        quit
+to_lb5   brl   lb5                        quit
 
 zr1      ph4   <size                    reserve the new area
          jsl   malloc
@@ -881,14 +881,37 @@ zr1      ph4   <size                    reserve the new area
          stx   val+2
          lda   ptr                      done if either pointer is null
          ora   ptr+2
-         beq   lb5
+         beq   to_lb5
          lda   p
          ora   p+2
-         beq   lb5
-         lda   ptr                      save original ptr for dispose
+         beq   to_lb5
+         lda   ptr                      save original ptr
          ldx   ptr+2
          sta   oldPtr
          stx   oldPtr+2
+         sub4  ptr,#2                   get size of old allocation
+         lda   [ptr]                    ... from area header, if specified
+         beq   lb0
+         sec
+         sbc   #~headersize   
+         sta   oldSize
+         stz   oldSize+2
+         bra   lb0a
+lb0      pha                            ... or from handle for block
+         pha
+         sub4  ptr,#4
+         ldy   #2
+         lda   [ptr],y
+         pha
+         lda   [ptr]
+         pha
+         _GetHandleSize
+         pl4   oldSize
+         sub4  oldSize,#~blockheader
+lb0a     cmpl  oldSize,size             if old size < new size then
+         bge   lb0b
+         move4 oldSize,size               size to move = old size
+lb0b     move4 oldPtr,ptr
          lda   size                     move old area to new:
          lsr   a                        ... if odd, move one byte
          bcc   lb1
@@ -940,6 +963,7 @@ lb5      lda   return                   patch return address
 
 val      ds    4                        value to return
 oldPtr   ds    4                        original value of ptr
+oldSize  ds    4                        size of old allocation
          end
 
 ****************************************************************
