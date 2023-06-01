@@ -912,7 +912,7 @@ lb2      lda   [ptr],y
          dbne  x,lb2
 lb3      ldy   size                     ... move <64K area
          bne   lb4a
-         bra   lb5
+         bra   lb4b
 lb4      lda   [ptr],y
          sta   [p],y
 lb4a     dey
@@ -920,7 +920,7 @@ lb4a     dey
          bne   lb4
          lda   [ptr]
          sta   [p]
-         ph4   oldPtr                   dispose of old area
+lb4b     ph4   oldPtr                   dispose of old area
          jsl   free
 
 lb5      lda   return                   patch return address
