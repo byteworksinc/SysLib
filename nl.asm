@@ -2097,5 +2097,5 @@ rtl      rtl
 
          error #8                       Jump to undefined case statement label
          lda   #$FFFF
-         jmp   ~Quit
+         brl   ~Quit
          end
