@@ -896,14 +896,16 @@ buffSize equ   8*1024
 lb1      pha                            get a file buffer
          pha
          ph4   #buffSize
+         lda   >~User_ID
          pha
-         ph2   #0
+         bne   lb1a
+         pha
          pha
          pha
          ph4   #~GetRef
          _FindHandle
          _SetHandleID
-         ph2   #$C010
+lb1a     ph2   #$C010
          ph4   #0
          _NewHandle
          ply
