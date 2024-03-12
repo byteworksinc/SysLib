@@ -803,29 +803,26 @@ ML10     MOVE4 RETURN-1,NUM2+4
 *        NUM1 - argument
 *
 *  Outputs:
-*        NUM2 - result
+*        NUM1 - result
 *
 ****************************************************************
 *
 ~SGN4    START
 NUM1     EQU   4
 
-         TSC                            set up DP
-         PHD
-         TCD
-         LDA   NUM1+2                   branch if number is positive
+         LDA   NUM1+2,S                 branch if number is positive
          BPL   LB1
          LDA   #$FFFF                   set to -1
-         STA   NUM1
-         STA   NUM1+2
+         STA   NUM1,S
+         STA   NUM1+2,S
          BRA   LB2
-LB1      ORA   NUM1                     done if number is 0
+LB1      ORA   NUM1,S                   done if number is 0
          BEQ   LB2
-         LDA   #1                       set to 1
-         STA   NUM1
-         STZ   NUM1+2
-LB2      PLD                            reset DP
-         RTL
+         LDA   #0                       set to 1
+         STA   NUM1+2,S
+         INC   A
+         STA   NUM1,S
+LB2      RTL
          END
 
 ****************************************************************
@@ -851,28 +848,25 @@ LB2      PLD                            reset DP
 ~SGN8    START
 NUM1     EQU   4
 
-         TSC                            set up DP
-         PHD
-         TCD
-         LDA   NUM1+6                   branch if number is positive
+         LDA   NUM1+6,S                 branch if number is positive
          BPL   LB1
          LDA   #$FFFF                   set to -1
-         STA   NUM1
-         STA   NUM1+2
-         STA   NUM1+4
-         STA   NUM1+6
+         STA   NUM1,S
+         STA   NUM1+2,S
+         STA   NUM1+4,S
+         STA   NUM1+6,S
          BRA   LB2
-LB1      ORA   NUM1+4                   done if number is 0
-         ORA   NUM1+2
-         ORA   NUM1
+LB1      ORA   NUM1+4,S                 done if number is 0
+         ORA   NUM1+2,S
+         ORA   NUM1,S
          BEQ   LB2
-         LDA   #1                       set to 1
-         STA   NUM1
-         STZ   NUM1+2
-         STZ   NUM1+4
-         STZ   NUM1+6
-LB2      PLD                            reset DP
-         RTL
+         LDA   #0                       set to 1
+         STA   NUM1+2,S
+         STA   NUM1+4,S
+         STA   NUM1+6,S
+         INC   A
+         STA   NUM1,S
+LB2      RTL
          END
 
 ****************************************************************
