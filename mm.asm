@@ -208,8 +208,7 @@ lb1      phx
 ;
          lda   [p]                      quit if the area is free
          jmi   rt1
-         lda   [p]                      P^ := P^|$8000
-         ora   #$8000
+         ora   #$8000                   P^ := P^|$8000
          sta   [p]
          ldy   #2                       SIZE := P^(2)
          lda   [p],y
@@ -528,11 +527,11 @@ malloc   entry
          lda   6,s                      fetch size of memory
          tax
          lda   4,s
-         cpx   #0                       if < ~BLOCKSIZE-~HEADERSIZE
+         txy                            if < ~BLOCKSIZE-~HEADERSIZE
          bne   lb1
          cmp   #~blocksize-~headersize
          bge   lb1
-         cmp   #0                         if 0 then RETURN NULL
+         tay                              if 0 then RETURN NULL
          beq   lb2
          jsl   ~NEW_AREA                  allocate area
          bra   lb2                      else
